@@ -1,53 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-<title>Birthday </title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday</title>
+
 <style>
-     body {
+body {
     text-align: center;
     font-family: Arial, sans-serif;
-   
-   
-  }
-  
-  h1, h2 {
+    background-image: url(https://i.pinimg.com/1200x/f9/ba/42/f9ba42943504ee3791a9f66e21457f5c.jpg);
+    background-size: cover;
+    background-position: center;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+h1, h2 {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  button {
+    color: #000;
+}
+
+button {
     font-size: 18px;
-    padding: 10px 20px;
+    padding: 10px 25px;
     margin: 15px;
     cursor: pointer;
     border: none;
-    border-radius: 8px;
-    transition: all 0.2s;
-  }
-  button:hover {
+    border-radius: 10px;
+    transition: all 0.25s ease;
+}
+button:hover {
     transform: scale(1.1);
-  }
-  #yesBtn {
+}
+
+#yesBtn {
     background-color: #353635;
     color: white;
-  }
-  #noBtn {
+}
+#noBtn {
     background-color: #949090;
     color: white;
-    position: relative;
-  }
-  #message {
-    width: 60%;
+    position: absolute;
+}
+
+#message {
+    width: 85%;
+    max-width: 600px;
     margin: 30px auto;
     font-size: 20px;
-  }
+    color: #222;
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+#photo {
+    width: 90%;
+    max-width: 500px;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    margin-top: 30px;
+    transition: all 0.3s ease;
+}
+#photo:hover {
+    transform: scale(1.05);
+}
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
-<body background="background.jpg">
-<img src="img.jpg" id="yes">
-<h2 id="question">Is today your birthday?</h2>
- 
-<button id="yesBtn">Yes</button>
-<button id="noBtn">No</button>
+
+<body>
+
+<!-- موسيقى -->
+<audio autoplay loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<img src="images/img.png" id="photo">
+
+<h2 id="question" style="font-size:45px;">
+Is today your special day? 🎂
+</h2>
+
+<button id="yesBtn">Yes </button>
+<button id="noBtn">No </button>
 
 <div id="message"></div>
 
@@ -57,38 +98,59 @@ const noBtn = document.getElementById('noBtn');
 const message = document.getElementById('message');
 const question = document.getElementById('question');
 
-// Fun move for No button
-noBtn.addEventListener('mouseenter', () => {
-  const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-  const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 100); // leave space for top
-  noBtn.style.position = 'absolute';
-  noBtn.style.left = x + 'px';
-  noBtn.style.top = y + 'px';
+
+noBtn.addEventListener('mouseover', () => {
+    const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+    const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+    noBtn.style.left = x + 'px';
+    noBtn.style.top = y + 'px';
 });
 
-// When Yes is clicked
-yesBtn.addEventListener('click', () => {
-  question.style.display = 'none';
-  yesBtn.style.display = 'none';
-  noBtn.style.display = 'none';
-  message.innerHTML = ` 
-    <h1>🎉 Happy Birthday 🎉</h1>
 
-    <p>
-      Happy birthday to my best friend. You mean so much to me, and I truly
-      appreciate your presence in my life. Your kindness and support never go
-      unnoticed. I wish you a year full of happiness, calm days, and beautiful
-      moments.
-    </p>
-    <p>— From your friend, Adam</p>
-    <button onclick="location.reload()">Back</button>
+const text = `🎉 Happy Birthday 🎉
+
+Happy birthday to my best friend.
+You are truly special to me,
+and I’m so grateful to have you in my life.
+
+Your kindness, your smile,
+and your beautiful soul
+make every day better.
+
+I wish you endless happiness,
+peaceful days,
+and moments that make you smile without even trying.
+
+— From your friend, Adam 
 `;
+
+yesBtn.addEventListener('click', () => {
+    question.style.display = 'none';
+    yesBtn.style.display = 'none';
+    noBtn.style.display = 'none';
+
+    message.innerHTML = '<pre id="type"></pre>';
+    const typeElement = document.getElementById('type');
+
+    let i = 0;
+    const typing = setInterval(() => {
+        typeElement.textContent += text.charAt(i);
+        i++;
+        if (i >= text.length) {
+            clearInterval(typing);
+
+            confetti({
+                particleCount: 250,
+                spread: 80,
+                origin: { y: 0.6 }
+            });
+
+            message.innerHTML += `<br><br>
+            <button onclick="location.reload()">Back 🔁</button>`;
+        }
+    }, 45);
 });
 </script>
 
 </body>
 </html>
-
-
-
-
