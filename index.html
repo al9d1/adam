@@ -1,155 +1,185 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Birthday</title>
+<title>Happy Birthday</title>
 
 <style>
 body {
- text-align: center;
-    font-family: Arial, sans-serif;
-    background-image: url(https://i.pinimg.com/736x/a1/31/c8/a131c8785b816c1676b0cefaa780c9d1.jpg);
-    background-size: cover;
-    background-position: center;
-    margin: 0;
-    padding: 0;
+    margin:0;
+    background:black;
+    color:#00ff9d;
+    font-family: "Courier New", monospace;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    overflow:auto;
 }
 
-
-
-h1, h2 {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #000;
+#terminal {
+    width:90%;
+    max-width:1000px;
+    font-size:32px;
+    line-height:1.8;
 }
 
 button {
-    font-size: 18px;
-    padding: 10px 25px;
-    margin: 15px;
-    cursor: pointer;
-    border: none;
-    border-radius: 10px;
-    transition: all 0.25s ease;
+    margin-left:25px;
+    padding:15px 35px;
+    background:black;
+    color:white;
+    border:2px solid #555;
+    cursor:pointer;
+    font-family:"Courier New", monospace;
+    font-size:22px;
 }
+
 button:hover {
-    transform: scale(1.1);
+    border-color:white;
 }
 
-#yesBtn {
-    background-color: #353635;
-    color: white;
-}
-#noBtn {
-    background-color: #949090;
-    color: white;
-    position: absolute;
-}
-
-#message {
-    width: 85%;
-    max-width: 600px;
-    margin: 30px auto;
-    font-size: 20px;
-    color: #222;
-    background-color: rgba(255, 255, 255, 0.95);
-    padding: 25px;
-    border-radius: 20px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+#surprise {
+    display:none;
+    position:absolute;
+    inset:0;
+    background:black;
+    color:#00ff9d;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    font-family: "Courier New", monospace;
 }
 
-#photo {
-    width: 90%;
-    max-width: 500px;
-    border-radius: 20px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-    margin-top: 30px;
-    transition: all 0.3s ease;
+.card {
+    width:85%;
+    max-width:800px;
+    text-align:left;
+    font-size:22px;
+    line-height:1.8;
 }
-#photo:hover {
-    transform: scale(1.05);
+
+.card img {
+    width:180px;
+    margin:10px;
+    border:2px solid #00ff9d;
+    border-radius:10px;
+}
+.images {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-top:20px;
 }
 </style>
-
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 
 <body>
 
-<!-- موسيقى -->
-<audio autoplay loop>
-  <source src="music.mp3" type="audio/mpeg">
-</audio>
+<div id="terminal"></div>
 
-<img src="images/img.png" id="photo">
-
-<h2 id="question" style="font-size:45px;">
-Is today your special day? 🎂
-</h2>
-
-<button id="yesBtn">Yes </button>
-<button id="noBtn">No </button>
-
-<div id="message"></div>
+<div id="surprise">
+    <div class="card" id="card-text"></div>
+    <div class="images" id="images-container"></div>
+</div>
 
 <script>
-const yesBtn = document.getElementById('yesBtn');
-const noBtn = document.getElementById('noBtn');
-const message = document.getElementById('message');
-const question = document.getElementById('question');
+const introText = [
+"> ...",
+"> today is your birthday",
+"> so I made you this program",
+">",
+"> do you want to see it?"
+];
+
+const birthdayText = [
+"> 🎉 Happy Birthday 🎉",
+"> Happy birthday to my best friend.",
+"> You are truly special to me,",
+"> and I’m so grateful to have you in my life.",
+">",
+"> Your kindness, your smile,",
+"> and your beautiful soul",
+"> make every day better.",
+">",
+"> I wish you endless happiness,",
+"> peaceful days,",
+"> and moments that make you smile without even trying.",
+">",
+"> — From your friend, Adam"
+];
 
 
-noBtn.addEventListener('mouseover', () => {
-    const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-    const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-    noBtn.style.left = x + 'px';
-    noBtn.style.top = y + 'px';
-});
 
 
-const text = `🎉 Happy Birthday 🎉
 
-Happy birthday to my best friend.
-You are truly special to me,
-and I’m so grateful to have you in my life.
+let i = 0, j = 0;
+let currentLine = "";
+let speed = 40;
 
-Your kindness, your smile,
-and your beautiful soul
-make every day better.
-
-I wish you endless happiness,
-peaceful days,
-and moments that make you smile without even trying.
-
-— From your friend, Adam 
-`;
-
-yesBtn.addEventListener('click', () => {
-    question.style.display = 'none';
-    yesBtn.style.display = 'none';
-    noBtn.style.display = 'none';
-
-    message.innerHTML = '<pre id="type"></pre>';
-    const typeElement = document.getElementById('type');
-
-    let i = 0;
-    const typing = setInterval(() => {
-        typeElement.textContent += text.charAt(i);
-        i++;
-        if (i >= text.length) {
-            clearInterval(typing);
-
-            confetti({
-                particleCount: 250,
-                spread: 80,
-                origin: { y: 0.6 }
-            });
-
-            message.innerHTML += `<br><br>
-            <button onclick="location.reload()">Back 🔁</button>`;
+function typeIntro() {
+    if (i < introText.length) {
+        if (j < introText[i].length) {
+            currentLine += introText[i][j];
+            document.getElementById("terminal").innerHTML = currentLine;
+            j++;
+            setTimeout(typeIntro, speed);
+        } else {
+            currentLine += "<br>";
+            i++;
+            j = 0;
+            setTimeout(typeIntro, 500);
         }
-    }, 45);
-});
+    } else {
+        showButton();
+    }
+}
+
+function showButton() {
+    const btn = document.createElement("button");
+    btn.innerText = "Yes";
+    btn.onclick = showSurprise;
+    document.getElementById("terminal").appendChild(btn);
+}
+
+function showSurprise() {
+    document.getElementById("terminal").style.display = "none";
+    const s = document.getElementById("surprise");
+    s.style.display = "flex";
+    typeBirthday();
+}
+
+let k = 0, l = 0;
+let currentBirthdayLine = "";
+
+function typeBirthday() {
+    if (k < birthdayText.length) {
+        if (l < birthdayText[k].length) {
+            currentBirthdayLine += birthdayText[k][l];
+            document.getElementById("card-text").innerHTML = currentBirthdayLine;
+            l++;
+            setTimeout(typeBirthday, speed);
+        } else {
+            currentBirthdayLine += "<br>";
+            k++;
+            l = 0;
+            setTimeout(typeBirthday, 300);
+        }
+    } else {
+        showImages();
+    }
+}
+
+function showImages() {
+    const container = document.getElementById("images-container");
+    images.forEach(src => {
+        const img = document.createElement("img");
+        img.src = src;
+        container.appendChild(img);
+    });
+}
+
+typeIntro();
 </script>
 
 </body>
